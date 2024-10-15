@@ -354,6 +354,7 @@ class AIR_OT_UpdateUpscaleModelEnum(bpy.types.Operator):
 class AIR_OT_SetComfyAsBackend(bpy.types.Operator):
     bl_idname = "ai_render.set_comfy_as_backend"
     bl_label = "Set ComfyUI as Backend"
+    bl_description = "Set ComfyUI as the backend for AI Render"
 
     def execute(self, context):
         # Set the Adddon Preference AIR_Preferences.sd_backend

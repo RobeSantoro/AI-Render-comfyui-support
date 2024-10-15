@@ -118,7 +118,7 @@ class AIR_PT_setup(bpy.types.Panel):
             # Quick Switch to ComfyUI
             row = layout.row()
             row.scale_y = 1.5
-            row.operator("ai_render.set_comfy_as_backend", text="Switch to ComfyUI", icon="BRUSH_CURVES_DENSITY")
+            row.operator("ai_render.set_comfy_as_backend", text="Quick Switch to ComfyUI", icon="BRUSH_CURVES_DENSITY")
 
         # show the image dimension help if the dimensions are invalid or too large
         elif AIR_PT_setup.has_dimensions_issue(context):
