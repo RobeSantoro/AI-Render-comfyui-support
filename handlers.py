@@ -103,7 +103,6 @@ def render_complete_handler(scene):
         operators.do_pre_api_setup(scene)
 
         # get the backend we're using
-        sd_backend = utils.get_active_backend()
         sd_backend_name = utils.sd_backend()
 
         if sd_backend_name == "comfyui":
