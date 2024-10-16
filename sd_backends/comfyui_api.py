@@ -29,46 +29,22 @@ LOG_DOWNLOAD_IMAGE = True
 LOG_MODEL_RESPONSE = False
 
 PARAM_TO_WORKFLOW = {
-    "prompt": {
-        "class_type": "CLIPTextEncode",
-        "input_key": "text",
-        "meta_title": "positive"
-    },
-    "negative_prompt": {
-        "class_type": "CLIPTextEncode",
-        "input_key": "text",
-        "meta_title": "negative"
-    },
-    "color_image": {
-        "class_type": "LoadImage",
-        "input_key": "image",
-        "meta_title": "color"
-    },
-    "depth_image": {
-        "class_type": "LoadImage",
-        "input_key": "image",
-        "meta_title": "depth"
-    },
-    "normal_image": {
-        "class_type": "LoadImage",
-        "input_key": "image",
-        "meta_title": "normal"
-    },
-    "openpose_body_image": {
-        "class_type": "LoadImage",
-        "input_key": "image",
-        "meta_title": "openpose_body"
-    },
+    "prompt": {"class_type": "CLIPTextEncode", "input_key": "text", "meta_title": "positive"},
+    "negative_prompt": {"class_type": "CLIPTextEncode", "input_key": "text", "meta_title": "negative"},
+    "color_image": {"class_type": "LoadImage", "input_key": "image", "meta_title": "color"},
+    "depth_image": {"class_type": "LoadImage", "input_key": "image", "meta_title": "depth"},
+    "normal_image": {"class_type": "LoadImage", "input_key": "image", "meta_title": "normal"},
+    "openpose_body_image": {"class_type": "LoadImage", "input_key": "image", "meta_title": "openpose_body"},
 }
 
 
 # CORE FUNCTIONS:
 def load_workflow(context, workflow_file) -> dict:
-    """ Given the context and the workflow file name, load the workflow JSON. and output it as a dictionary."""
+    """Given the context and the workflow file name, load the workflow JSON. and output it as a dictionary."""
 
     workflow_path = os.path.join(get_workflows_path(context), workflow_file)
     try:
-        with open(workflow_path, 'r') as file:
+        with open(workflow_path, "r") as file:
             return json.load(file)
     except:
         return operators.handle_error(f"Couldn't load the workflow file: {workflow_file}.", "workflow_file_not_found")
@@ -88,7 +64,7 @@ def upload_image(img_file, subfolder: str):
     server_url = get_server_url("/upload/image")
     headers = create_headers()
     data = {"subfolder": subfolder, "type": "input"}
-    files = {'image': (os.path.basename(image_path), open(image_path, 'rb'))}
+    files = {"image": (os.path.basename(image_path), open(image_path, "rb"))}
 
     if LOG_REQUEST:
         print(Fore.WHITE + "\nREQUEST TO: " + server_url)
@@ -97,15 +73,24 @@ def upload_image(img_file, subfolder: str):
     try:
         resp = requests.post(server_url, files=files, data=data, headers=headers)
     except requests.exceptions.ConnectionError:
-        return operators.handle_error(f"The ComfyUI Server cannot be found. It's either not running, or it's running at a different location than what you specified in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_not_found")
+        return operators.handle_error(
+            f"The ComfyUI Server cannot be found. It's either not running, or it's running at a different location than what you specified in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_not_found",
+        )
     except requests.exceptions.MissingSchema:
-        return operators.handle_error(f"The url for your local Stable Diffusion server is invalid. Please set it correctly in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_url_invalid")
+        return operators.handle_error(
+            f"The url for your local Stable Diffusion server is invalid. Please set it correctly in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_url_invalid",
+        )
     except requests.exceptions.ReadTimeout:
-        return operators.handle_error("The local Stable Diffusion server timed out. Set a longer timeout in AI Render preferences, or use a smaller image size.", "timeout")
+        return operators.handle_error(
+            "The local Stable Diffusion server timed out. Set a longer timeout in AI Render preferences, or use a smaller image size.",
+            "timeout",
+        )
 
     # if LOG_RESPONSE:
-        # print(Fore.WHITE + "\nUPLOAD IMAGE RESPONSE:" + Fore.RESET)
-        # pprint.pp(resp.content)
+    # print(Fore.WHITE + "\nUPLOAD IMAGE RESPONSE:" + Fore.RESET)
+    # pprint.pp(resp.content)
 
     img_file.close()
 
@@ -113,14 +98,12 @@ def upload_image(img_file, subfolder: str):
     return resp.json().get("name")
 
 
-def find_node_by_title(workflow: dict,
-                       class_type: str,
-                       meta_title: str):
+def find_node_by_title(workflow: dict, class_type: str, meta_title: str):
     """Find the node key based on class_type and meta_title."""
 
     for key, value in workflow.items():
-        if value['class_type'] == class_type:
-            if value.get('_meta', {}).get('title') == meta_title:
+        if value["class_type"] == class_type:
+            if value.get("_meta", {}).get("title") == meta_title:
                 return key
 
     return None
@@ -163,21 +146,21 @@ def map_comfy_props(comfyui_props, workflow):
 
     updated_workflow = workflow
 
-    if (LOG_PROPS):
+    if LOG_PROPS:
         print(Fore.WHITE + "\nLOG COMFYUI PROPS:" + Fore.RESET)
 
     for prop in comfyui_props.bl_rna.properties.items():
-        if prop[1].type == 'COLLECTION':
+        if prop[1].type == "COLLECTION":
             for item in getattr(comfyui_props, prop[0]):
                 node_key = item.name
                 for sub_prop in item.bl_rna.properties.items():
                     # Access the updated workflow at node_key and change in the inputs only if key exists
                     if sub_prop[0] in updated_workflow[node_key]["inputs"]:
-                        updated_workflow[node_key]["inputs"][sub_prop[0]] = getattr(
-                            item, sub_prop[0])
-                        if (LOG_PROPS):
+                        updated_workflow[node_key]["inputs"][sub_prop[0]] = getattr(item, sub_prop[0])
+                        if LOG_PROPS:
                             print(
-                            f"Updated workflow at node_key: {node_key} with {sub_prop[0]}: {getattr(item, sub_prop[0])}")
+                                f"Updated workflow at node_key: {node_key} with {sub_prop[0]}: {getattr(item, sub_prop[0])}"
+                            )
                 print()
 
     if LOG_MAPPED_WORKFLOW:
@@ -188,19 +171,19 @@ def map_comfy_props(comfyui_props, workflow):
     # Save mapped json to local file
     workflow_path = utils.get_addon_preferences().comfyui_workflows_path
 
-    workflow_file_name = comfyui_props.comfy_current_workflow[:-5] + '_mapped.json'
+    workflow_file_name = comfyui_props.comfy_current_workflow[:-5] + "_mapped.json"
 
     # Add _mapped to the filename only and save it for debugging
-    workflow_file_path = workflow_path + '/../' + workflow_file_name
+    workflow_file_path = workflow_path + "/../" + workflow_file_name
 
-    with open(workflow_file_path, 'w') as f:
+    with open(workflow_file_path, "w") as f:
         json.dump(updated_workflow, f, indent=4)
 
     return workflow
 
 
 def generate(params, img_file, filename_prefix, props, comfyui_props):
-
+    """Generate image with ComfyUI UI"""
     if LOG_PROPS:
         print(Fore.WHITE + "\nLOG PROPS:" + Fore.RESET)
         pprint.pp(props)
@@ -226,20 +209,19 @@ def generate(params, img_file, filename_prefix, props, comfyui_props):
     openpose_body_image_path = f"{get_openpose_body_file_input_path(bpy.context)}Image{frame_number}.png"
 
     # Add the paths to the params
-    params['color_image'] = color_image_path
-    params['depth_image'] = depth_image_path
-    params['normal_image'] = normal_image_path
-    params['openpose_body_image'] = openpose_body_image_path
+    params["color_image"] = color_image_path
+    params["depth_image"] = depth_image_path
+    params["normal_image"] = normal_image_path
+    params["openpose_body_image"] = openpose_body_image_path
 
     # Create Color Image from pixels data
-    if (bpy.data.images['Viewer Node'].pixels):
-
-        pixels = bpy.data.images['Viewer Node'].pixels
-        print(len(pixels)) # size is always width * height * 4 (rgba)
+    if bpy.data.images["Viewer Node"].pixels:
+        pixels = bpy.data.images["Viewer Node"].pixels
+        print(len(pixels))  # size is always width * height * 4 (rgba)
 
         # copy buffer to numpy array for faster manipulation
         arr = np.array(pixels[:])
-        print('pixels max: %f; pixels min: %f' % (arr.max(), arr.min()))
+        print("pixels max: %f; pixels min: %f" % (arr.max(), arr.min()))
 
         # Save a temp image from the pixels
         # temp_image = bpy.data.images.new(name="temp_image", width=512, height=512, alpha=True, float_buffer=False)
@@ -262,7 +244,10 @@ def generate(params, img_file, filename_prefix, props, comfyui_props):
     try:
         server_url = get_server_url("/prompt")
     except:
-        return operators.handle_error(f"You need to specify a location for the local Stable Diffusion server in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_url_missing")
+        return operators.handle_error(
+            f"You need to specify a location for the local Stable Diffusion server in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_url_missing",
+        )
 
     # send the API request
     response = do_post(url=server_url, data=data)
@@ -278,6 +263,7 @@ def generate(params, img_file, filename_prefix, props, comfyui_props):
 
 
 def handle_success(response, filename_prefix):
+    """Handle the successful response from ComfyUI"""
 
     # Get the prompt_id from the response
     try:
@@ -290,7 +276,6 @@ def handle_success(response, filename_prefix):
             print(Fore.LIGHTWHITE_EX + "\nPROMPT ID: " + Fore.RESET + prompt_id)
 
     except:
-
         print("ComfyUI response content: ")
         print(response.content)
         return operators.handle_error("Received an unexpected response from the ComfyUI.", "unexpected_response")
@@ -317,7 +302,6 @@ def handle_success(response, filename_prefix):
             status_completed = status.get("status_str") == "success"
 
             if status_completed:
-
                 if LOG_DOWNLOAD_IMAGE:
                     print(Fore.LIGHTWHITE_EX + "STATUS: " + Fore.RESET + status.get("status_str"))
                 if LOG_RESPONSE:
@@ -343,7 +327,9 @@ def handle_success(response, filename_prefix):
                 image_file_name = response_obj[prompt_id]["outputs"][save_image_node]["images"][0]["filename"]
 
                 if LOG_DOWNLOAD_IMAGE:
-                    print(Fore.LIGHTWHITE_EX + "SAVE IMAGE FILE NAME: " + Fore.RESET + image_file_name)  # ComfyUI_00057_.png
+                    print(
+                        Fore.LIGHTWHITE_EX + "SAVE IMAGE FILE NAME: " + Fore.RESET + image_file_name
+                    )  # ComfyUI_00057_.png
                 break
         else:
             return handle_error(response)
@@ -370,7 +356,7 @@ def handle_success(response, filename_prefix):
 
     # save the image to the temp file
     try:
-        with open(output_file, 'wb') as file:
+        with open(output_file, "wb") as file:
             file.write(img_binary)
 
     except:
@@ -381,11 +367,15 @@ def handle_success(response, filename_prefix):
 
 
 def handle_error(response):
-    if response.status_code == 404:
+    """Handle the error response from ComfyUI"""
 
+    if response.status_code == 404:
         try:
             response_obj = response.json()
-            return operators.handle_error(f"An error occurred in the ComfyUI server. Full server response: {json.dumps(response_obj)}", "unknown_error")
+            return operators.handle_error(
+                f"An error occurred in the ComfyUI server. Full server response: {json.dumps(response_obj)}",
+                "unknown_error",
+            )
         except:
             return operators.handle_error("It looks like the ComfyUI server is running, but it's not in API mode.")
 
@@ -393,7 +383,9 @@ def handle_error(response):
         print(Fore.RED + "ERROR DETAILS:")
         pprint.pp(response.json())
         print(Fore.RESET)
-        return operators.handle_error(f"AN ERROR occurred in the ComfyUI server.\n {response.json()}", "unknown_error_response")
+        return operators.handle_error(
+            f"AN ERROR occurred in the ComfyUI server.\n {response.json()}", "unknown_error_response"
+        )
 
 
 # PRIVATE SUPPORT FUNCTIONS:
@@ -419,11 +411,20 @@ def do_get(url):
     try:
         return requests.get(url, headers=create_headers(), timeout=utils.local_sd_timeout())
     except requests.exceptions.ConnectionError:
-        return operators.handle_error(f"The ComfyUI Server cannot be found. It's either not running, or it's running at a different location than what you specified in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_not_found")
+        return operators.handle_error(
+            f"The ComfyUI Server cannot be found. It's either not running, or it's running at a different location than what you specified in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_not_found",
+        )
     except requests.exceptions.MissingSchema:
-        return operators.handle_error(f"The url for your local Stable Diffusion server is invalid. Please set it correctly in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_url_invalid")
+        return operators.handle_error(
+            f"The url for your local Stable Diffusion server is invalid. Please set it correctly in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_url_invalid",
+        )
     except requests.exceptions.ReadTimeout:
-        return operators.handle_error("The local Stable Diffusion server timed out. Set a longer timeout in AI Render preferences, or use a smaller image size.", "timeout")
+        return operators.handle_error(
+            "The local Stable Diffusion server timed out. Set a longer timeout in AI Render preferences, or use a smaller image size.",
+            "timeout",
+        )
 
 
 def do_post(url, data):
@@ -433,11 +434,20 @@ def do_post(url, data):
     try:
         return requests.post(url, json=data, headers=create_headers(), timeout=utils.local_sd_timeout())
     except requests.exceptions.ConnectionError:
-        return operators.handle_error(f"The ComfyUI Server cannot be found. It's either not running, or it's running at a different location than what you specified in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_not_found")
+        return operators.handle_error(
+            f"The ComfyUI Server cannot be found. It's either not running, or it's running at a different location than what you specified in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_not_found",
+        )
     except requests.exceptions.MissingSchema:
-        return operators.handle_error(f"The url for your local Stable Diffusion server is invalid. Please set it correctly in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})", "local_server_url_invalid")
+        return operators.handle_error(
+            f"The url for your local Stable Diffusion server is invalid. Please set it correctly in the add-on preferences. [Get help]({config.HELP_WITH_LOCAL_INSTALLATION_URL})",
+            "local_server_url_invalid",
+        )
     except requests.exceptions.ReadTimeout:
-        return operators.handle_error("The local Stable Diffusion server timed out. Set a longer timeout in AI Render preferences, or use a smaller image size.", "timeout")
+        return operators.handle_error(
+            "The local Stable Diffusion server timed out. Set a longer timeout in AI Render preferences, or use a smaller image size.",
+            "timeout",
+        )
 
 
 # SUPPORT FUNCTIONS:
@@ -457,8 +467,9 @@ def create_workflows_enum(self, context):
 
 def create_workflow_enum_realtime(self, context):
     workflows_path = get_workflows_path(bpy.context)
-    workflow_list = [f for f in os.listdir(workflows_path) if os.path.isfile(
-        os.path.join(workflows_path, f)) and f.endswith(".json")]
+    workflow_list = [
+        f for f in os.listdir(workflows_path) if os.path.isfile(os.path.join(workflows_path, f)) and f.endswith(".json")
+    ]
 
     enum_items = []
     for i, workflow in enumerate(workflow_list):
@@ -468,18 +479,18 @@ def create_workflow_enum_realtime(self, context):
 
 def get_workflows(context):
     workflows_path = get_workflows_path(bpy.context)
-    workflow_list = [f for f in os.listdir(workflows_path) if os.path.isfile(
-        os.path.join(workflows_path, f)) and f.endswith(".json")]
+    workflow_list = [
+        f for f in os.listdir(workflows_path) if os.path.isfile(os.path.join(workflows_path, f)) and f.endswith(".json")
+    ]
 
     return workflow_list
 
 
 def convert_path_in_workflow(context):
-    """ Convert "\\" to "/" and "/" to "\\" in the current json workflow overwriting it"""
+    """Convert "\\" to "/" and "/" to "\\" in the current json workflow overwriting it"""
 
     current_workflow = context.scene.comfyui_props.comfy_current_workflow
-    current_workflow_path = get_workflows_path(
-        context) + "/" + current_workflow
+    current_workflow_path = get_workflows_path(context) + "/" + current_workflow
 
     print(Fore.WHITE + "\nCURRENT WORKFLOW PATH:" + Fore.RESET)
     print(current_workflow_path)
@@ -494,9 +505,9 @@ def convert_path_in_workflow(context):
             lines = f.readlines()
         with open(current_workflow_path, "w") as f:
             for line in lines:
-                line = line.replace('\\\\', '/') if '\\\\' in line else line
+                line = line.replace("\\\\", "/") if "\\\\" in line else line
                 f.write(line)
-                print(Fore.GREEN + "Updated:" + line[:-1]) if '/' in line else None
+                print(Fore.GREEN + "Updated:" + line[:-1]) if "/" in line else None
 
     elif platform.system() == "Windows":
         print(Fore.GREEN + "Changing Paths to '\\\\'")
@@ -504,9 +515,9 @@ def convert_path_in_workflow(context):
             lines = f.readlines()
         with open(current_workflow_path, "w") as f:
             for line in lines:
-                line = line.replace('/', '\\\\') if '/' in line else line
+                line = line.replace("/", "\\\\") if "/" in line else line
                 f.write(line)
-                print(Fore.GREEN + "Updated:" + line[:-1]) if '\\\\' in line else None
+                print(Fore.GREEN + "Updated:" + line[:-1]) if "\\\\" in line else None
     return
 
 
@@ -521,7 +532,7 @@ def create_models_enum(self, context):
 
 
 def get_ckpt_models(context):
-    """ GET /object_info/CheckpointLoaderSimple endpoint
+    """GET /object_info/CheckpointLoaderSimple endpoint
     to get the available models"""
 
     # prepare the server url
@@ -540,7 +551,6 @@ def get_ckpt_models(context):
 
     # handle the response
     if response.status_code == 200:
-
         models_list = response.json()["CheckpointLoaderSimple"]["input"]["required"]["ckpt_name"][0]
 
         if LOG_MODEL_RESPONSE:
@@ -567,7 +577,7 @@ def create_lora_enum(self, context):
 
 
 def get_lora_models(context):
-    """ GET /object_info/LoraLoader endpoint """
+    """GET /object_info/LoraLoader endpoint"""
 
     # prepare the server url
     try:
@@ -585,7 +595,6 @@ def get_lora_models(context):
 
     # handle the response
     if response.status_code == 200:
-
         models_list = response.json()["LoraLoader"]["input"]["required"]["lora_name"][0]
 
         if LOG_MODEL_RESPONSE:
@@ -612,7 +621,7 @@ def create_comfy_sampler_enum(self, context):
 
 
 def get_comfy_samplers(context):
-    """ GET /object_info/KSampler endpoint to get the available models"""
+    """GET /object_info/KSampler endpoint to get the available models"""
 
     # prepare the server url
     try:
@@ -630,7 +639,6 @@ def get_comfy_samplers(context):
 
     # handle the response
     if response.status_code == 200:
-
         samplers_list = response.json()["KSampler"]["input"]["required"]["sampler_name"][0]
 
         if LOG_MODEL_RESPONSE:
@@ -649,13 +657,13 @@ def get_comfy_samplers(context):
 def get_samplers():
     # Not using this in Comfy, it's here only for compatibility with others backends
     return [
-        ('default', 'default', '', 20),
+        ("default", "default", "", 20),
     ]
 
 
 def default_sampler():
     # Not using this in Comfy, it's here only for compatibility with others backends
-    return 'default'
+    return "default"
 
 
 COMFY_SCHEDULERS = []
@@ -669,7 +677,7 @@ def create_comfy_scheduler_enum(self, context):
 
 
 def get_comfy_schedulers(context):
-    """ GET /object_info/KSampler endpoint to get the available models"""
+    """GET /object_info/KSampler endpoint to get the available models"""
 
     # prepare the server url
     try:
@@ -687,7 +695,6 @@ def get_comfy_schedulers(context):
 
     # handle the response
     if response.status_code == 200:
-
         scheduler_list = response.json()["KSampler"]["input"]["required"]["scheduler"][0]
 
         if LOG_MODEL_RESPONSE:
@@ -714,7 +721,7 @@ def create_control_net_enum(self, context):
 
 
 def get_control_nets(context):
-    """ GET /object_info/ControlNetLoader endpoint """
+    """GET /object_info/ControlNetLoader endpoint"""
 
     # prepare the server url
     try:
@@ -732,7 +739,6 @@ def get_control_nets(context):
 
     # handle the response
     if response.status_code == 200:
-
         control_nets_list = response.json()["ControlNetLoader"]["input"]["required"]["control_net_name"][0]
 
         if LOG_MODEL_RESPONSE:
@@ -752,6 +758,8 @@ COMFY_UPSCALE_MODELS = []
 
 
 def create_upscale_model_enum(self, context):
+    """Create an enum for the upscale model."""
+
     enum_items = []
     for i, model in enumerate(COMFY_UPSCALE_MODELS):
         enum_items.append((model, model, "", i))
@@ -759,7 +767,7 @@ def create_upscale_model_enum(self, context):
 
 
 def get_upscale_models(context):
-    """ GET /object_info/UpscaleModelLoader endpoint """
+    """GET /object_info/UpscaleModelLoader endpoint"""
 
     # prepare the server url
     try:
@@ -777,7 +785,6 @@ def get_upscale_models(context):
 
     # handle the response
     if response.status_code == 200:
-
         upscale_models_list = response.json()["UpscaleModelLoader"]["input"]["required"]["model_name"][0]
 
         if LOG_MODEL_RESPONSE:
@@ -811,27 +818,31 @@ def ensure_film_transparent(context):
 
 
 def normalpass2normalmap_node_group(context):
-
     # Create a new node tree
-    normalpass2normalmap = bpy.data.node_groups.new(
-        type="CompositorNodeTree", name="NormalPass2NormalMap")
+    normalpass2normalmap = bpy.data.node_groups.new(type="CompositorNodeTree", name="NormalPass2NormalMap")
 
     # normalpass2normalmap interface
     # Socket Image
-    image_socket = normalpass2normalmap.interface.new_socket(name="Image", in_out='OUTPUT', socket_type='NodeSocketColor')
-    image_socket.attribute_domain = 'POINT'
+    image_socket = normalpass2normalmap.interface.new_socket(
+        name="Image", in_out="OUTPUT", socket_type="NodeSocketColor"
+    )
+    image_socket.attribute_domain = "POINT"
 
     # Socket Image
-    image_socket_1 = normalpass2normalmap.interface.new_socket(name="Image", in_out='INPUT', socket_type='NodeSocketColor')
-    image_socket_1.attribute_domain = 'POINT'
+    image_socket_1 = normalpass2normalmap.interface.new_socket(
+        name="Image", in_out="INPUT", socket_type="NodeSocketColor"
+    )
+    image_socket_1.attribute_domain = "POINT"
 
     # Socket Alpha
-    alpha_socket = normalpass2normalmap.interface.new_socket(name="Alpha", in_out='INPUT', socket_type='NodeSocketFloat')
-    alpha_socket.subtype = 'FACTOR'
+    alpha_socket = normalpass2normalmap.interface.new_socket(
+        name="Alpha", in_out="INPUT", socket_type="NodeSocketFloat"
+    )
+    alpha_socket.subtype = "FACTOR"
     alpha_socket.default_value = 1.0
     alpha_socket.min_value = 0.0
     alpha_socket.max_value = 1.0
-    alpha_socket.attribute_domain = 'POINT'
+    alpha_socket.attribute_domain = "POINT"
 
     # initialize normalpass2normalmap nodes
     # node Group Output
@@ -842,7 +853,7 @@ def normalpass2normalmap_node_group(context):
     # node Mix
     mix = normalpass2normalmap.nodes.new("CompositorNodeMixRGB")
     mix.name = "Mix"
-    mix.blend_type = 'MULTIPLY'
+    mix.blend_type = "MULTIPLY"
     mix.use_alpha = False
     mix.use_clamp = False
     # Fac
@@ -853,7 +864,7 @@ def normalpass2normalmap_node_group(context):
     # node Mix.001
     mix_001 = normalpass2normalmap.nodes.new("CompositorNodeMixRGB")
     mix_001.name = "Mix.001"
-    mix_001.blend_type = 'ADD'
+    mix_001.blend_type = "ADD"
     mix_001.use_alpha = False
     mix_001.use_clamp = False
     # Fac
@@ -872,16 +883,16 @@ def normalpass2normalmap_node_group(context):
     # node Combine Color
     combine_color = normalpass2normalmap.nodes.new("CompositorNodeCombineColor")
     combine_color.name = "Combine Color"
-    combine_color.mode = 'RGB'
-    combine_color.ycc_mode = 'ITUBT709'
+    combine_color.mode = "RGB"
+    combine_color.ycc_mode = "ITUBT709"
     # Alpha
     combine_color.inputs[3].default_value = 1.0
 
     # node Separate Color
     separate_color = normalpass2normalmap.nodes.new("CompositorNodeSeparateColor")
     separate_color.name = "Separate Color"
-    separate_color.mode = 'RGB'
-    separate_color.ycc_mode = 'ITUBT709'
+    separate_color.mode = "RGB"
+    separate_color.ycc_mode = "ITUBT709"
 
     # node Group Input
     group_input = normalpass2normalmap.nodes.new("NodeGroupInput")
@@ -968,9 +979,9 @@ def ensure_compositor_nodes(context):
     # node Color Ramp
     color_ramp = nodes.new("CompositorNodeValToRGB")
     color_ramp.name = "Color Ramp"
-    color_ramp.color_ramp.color_mode = 'RGB'
-    color_ramp.color_ramp.hue_interpolation = 'NEAR'
-    color_ramp.color_ramp.interpolation = 'EASE'
+    color_ramp.color_ramp.color_mode = "RGB"
+    color_ramp.color_ramp.hue_interpolation = "NEAR"
+    color_ramp.color_ramp.interpolation = "EASE"
     color_ramp.location = (360, 74)
     color_ramp.width, color_ramp.height = 245.0, 100.0
 
@@ -998,7 +1009,7 @@ def ensure_compositor_nodes(context):
     render_layers = nodes.new("CompositorNodeRLayers")
     render_layers.label = "Render Layers"
     render_layers.name = "Render Layers"
-    render_layers.layer = 'ViewLayer'
+    render_layers.layer = "ViewLayer"
     render_layers.location = (3.5, 180)
     render_layers.width, render_layers.height = 240.0, 100.0
 
@@ -1045,7 +1056,6 @@ def ensure_compositor_nodes(context):
 
     # if Openpose_body view layer exists
     if context.scene.view_layers.get("Openpose_body"):
-
         # node OpenPose_body file_output
         openpose_body_file_output = nodes.new("CompositorNodeOutputFile")
         openpose_body_file_output.label = "OpenPose_body"
@@ -1059,7 +1069,7 @@ def ensure_compositor_nodes(context):
         open_pose_render_layer = nodes.new("CompositorNodeRLayers")
         open_pose_render_layer.label = "OpenPose Render Layers"
         open_pose_render_layer.name = "OpenPose Render Layers"
-        open_pose_render_layer.layer = 'Openpose_body'
+        open_pose_render_layer.layer = "Openpose_body"
         open_pose_render_layer.location = (3.5, -300)
         open_pose_render_layer.width, open_pose_render_layer.height = 240.0, 100.0
 
@@ -1125,7 +1135,7 @@ def get_openpose_body_file_input_path(context):
 def get_upscaler_models(context):
     models = context.scene.air_props.automatic1111_available_upscaler_models
 
-    if (not models):
+    if not models:
         return []
     else:
         enum_list = []
@@ -1139,11 +1149,11 @@ def is_upscaler_model_list_loaded(context=None):
 
 
 def default_upscaler_model():
-    return ''
+    return ""
 
 
 def get_image_format():
-    return 'PNG'
+    return "PNG"
 
 
 def supports_negative_prompts():
