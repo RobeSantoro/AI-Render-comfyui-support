@@ -4,6 +4,7 @@ import math
 import random
 import re
 import time
+import os
 
 from . import (
     analytics,
@@ -860,7 +861,7 @@ class AIR_OT_show_dimension_options_for_sdxl_1024(bpy.types.Operator):
 
     def draw(self, context):
         layout = self.layout
-        utils.label_multiline(layout, text=f"Choose dimensions that Stable Diffusion can work with. SDXL images must be one of the these image sizes:", width=self.panel_width)
+        utils.label_multiline(layout, text="Choose dimensions that Stable Diffusion can work with. SDXL images must be one of the these image sizes:", width=self.panel_width)
 
         layout.separator()
 
