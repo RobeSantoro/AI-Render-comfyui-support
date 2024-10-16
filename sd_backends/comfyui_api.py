@@ -1,6 +1,5 @@
 import os
 import bpy
-import base64
 import requests
 import json
 import pprint
@@ -82,7 +81,7 @@ def upload_image(img_file, subfolder: str):
     image_path = img_file.name
 
     if LOG_UPLOAD_IMAGE:
-        print(Fore.WHITE + f"\nLOG IMAGE PATH:" + Fore.RESET)
+        print(Fore.WHITE + "\nLOG IMAGE PATH:" + Fore.RESET)
         print(image_path)
 
     # prepare the data
@@ -268,7 +267,7 @@ def generate(params, img_file, filename_prefix, props, comfyui_props):
     # send the API request
     response = do_post(url=server_url, data=data)
 
-    if response == False:
+    if response is False:
         return False
 
     # Check if the response is successful and not containing node_errors
@@ -388,7 +387,7 @@ def handle_error(response):
             response_obj = response.json()
             return operators.handle_error(f"An error occurred in the ComfyUI server. Full server response: {json.dumps(response_obj)}", "unknown_error")
         except:
-            return operators.handle_error(f"It looks like the ComfyUI server is running, but it's not in API mode.")
+            return operators.handle_error("It looks like the ComfyUI server is running, but it's not in API mode.")
 
     else:
         print(Fore.RED + "ERROR DETAILS:")
@@ -534,7 +533,7 @@ def get_ckpt_models(context):
     # send the API request
     response = do_get(server_url)
 
-    if response == False:
+    if response is False:
         return None
 
     models_list = []
@@ -579,7 +578,7 @@ def get_lora_models(context):
     # send the API request
     response = do_get(server_url)
 
-    if response == False:
+    if response is False:
         return None
 
     models_list = []
@@ -624,7 +623,7 @@ def get_comfy_samplers(context):
     # send the API request
     response = do_get(server_url)
 
-    if response == False:
+    if response is False:
         return None
 
     samplers_list = []
@@ -681,7 +680,7 @@ def get_comfy_schedulers(context):
     # send the API request
     response = do_get(server_url)
 
-    if response == False:
+    if response is False:
         return None
 
     scheduler_list = []
@@ -726,7 +725,7 @@ def get_control_nets(context):
     # send the API request
     response = do_get(server_url)
 
-    if response == False:
+    if response is False:
         return None
 
     control_nets_list = []
@@ -771,7 +770,7 @@ def get_upscale_models(context):
     # send the API request
     response = do_get(server_url)
 
-    if response == False:
+    if response is False:
         return None
 
     upscale_models_list = []
