@@ -31,7 +31,7 @@
   },
   "4": {
     "inputs": {
-      "ckpt_name": "SD15\\PHOTO\\realisticVisionV51_v51VAE.safetensors"
+      "ckpt_name": "SD15\\realisticVisionV51_v51VAE.safetensors"
     },
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
@@ -40,7 +40,7 @@
   },
   "6": {
     "inputs": {
-      "text": "A metal SIgn on the grass",
+      "text": "A cube made of metal",
       "clip": [
         "26",
         1
@@ -120,8 +120,7 @@
   },
   "12": {
     "inputs": {
-      "image": "Image0001.png",
-      "upload": "image"
+      "image": "Image0001.png"
     },
     "class_type": "LoadImage",
     "_meta": {
@@ -157,7 +156,7 @@
   },
   "14": {
     "inputs": {
-      "control_net_name": "SD15\\control_v11\\control_v11f1p_sd15_depth.pth"
+      "control_net_name": "SD15\\control_v11f1p_sd15_depth.pth"
     },
     "class_type": "ControlNetLoader",
     "_meta": {
@@ -166,8 +165,7 @@
   },
   "15": {
     "inputs": {
-      "image": "Image0001 (1).png",
-      "upload": "image"
+      "image": "Image0001 (1).png"
     },
     "class_type": "LoadImage",
     "_meta": {
@@ -203,7 +201,7 @@
   },
   "17": {
     "inputs": {
-      "control_net_name": "SD15\\control_v11\\control_v11p_sd15_normalbae.pth"
+      "control_net_name": "SD15\\control_v11p_sd15_normalbae.pth"
     },
     "class_type": "ControlNetLoader",
     "_meta": {
@@ -212,8 +210,7 @@
   },
   "18": {
     "inputs": {
-      "image": "Image0001 (2).png",
-      "upload": "image"
+      "image": "Image0001 (2).png"
     },
     "class_type": "LoadImage",
     "_meta": {
@@ -352,7 +349,7 @@
   },
   "41": {
     "inputs": {
-      "control_net_name": "SD15\\control_v11\\control_v11p_sd15_lineart.pth"
+      "control_net_name": "SD15\\control_v11p_sd15_lineart.pth"
     },
     "class_type": "ControlNetLoader",
     "_meta": {
@@ -383,6 +380,8 @@
         2
       ],
       "keep_proportions": false,
+      "upscale_method": "nearest-exact",
+      "crop": "disabled",
       "mask": [
         "12",
         1
