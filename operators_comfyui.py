@@ -145,6 +145,32 @@ def comfy_generate(scene, prompts=None, use_last_sd_image=False):
     return True
 
 
+class AIR_OT_open_comfyui_workflows_folder(bpy.types.Operator):
+    "Open the workflow folder in the Windows Explorer or macOS Finder"
+
+    bl_idname = "ai_render.open_comfyui_workflows_folder"
+    bl_label = "Open Workflow Folder"
+    bl_description = "Open the workflow folder in the Windows Explorer or macOS Finder"
+
+    def execute(self, context):
+        workflow_folder_raw = utils.get_addon_preferences().comfyui_workflows_path
+        workflow_folder = os.path.normpath(workflow_folder_raw)
+
+        print(f"Opening folder: {workflow_folder}")
+
+        if platform.system() == "Windows":
+            os.system(f'explorer "{workflow_folder}"')
+        elif platform.system() == "Darwin":
+            os.system(f"open '{workflow_folder}'")
+        elif platform.system() == "Linux":
+            try:
+                os.system(f'xdg-open "{workflow_folder}"')
+            except Exception:
+                print(f"Could not open folder on Linux using xdg-open.")
+
+        return {"FINISHED"}
+
+
 class AIR_OT_open_comfyui_input_folder(bpy.types.Operator):
     "Open the input folder in the Windows Explorer or macOS Finder"
 
@@ -153,15 +179,21 @@ class AIR_OT_open_comfyui_input_folder(bpy.types.Operator):
     bl_description = "Open the input folder in the Windows Explorer or macOS Finder"
 
     def execute(self, context):
-        input_folder = comfyui_api.get_comfyui_input_path(context)
-        print(f"Opening folder: {input_folder}")
+            input_folder_raw = comfyui_api.get_comfyui_input_path(context)
+            input_folder = os.path.normpath(input_folder_raw)
+            print(f"Opening folder: {input_folder}")
 
-        if platform.system() == "Windows":
-            os.system(f"explorer '{input_folder}'")
-        elif platform.system() == "Darwin":
-            os.system(f"open '{input_folder}'")
+            if platform.system() == "Windows":
+                os.system(f'explorer "{input_folder}"')
+            elif platform.system() == "Darwin":
+                os.system(f"open '{input_folder}'")
+            elif platform.system() == "Linux":
+                try:
+                    os.system(f'xdg-open "{input_folder}"')
+                except Exception:
+                    print(f"Could not open folder on Linux using xdg-open.")
 
-        return {"FINISHED"}
+            return {"FINISHED"}
 
 
 class AIR_OT_open_comfyui_output_folder(bpy.types.Operator):
@@ -172,32 +204,19 @@ class AIR_OT_open_comfyui_output_folder(bpy.types.Operator):
     bl_description = "Open the output folder in the Windows Explorer or macOS Finder"
 
     def execute(self, context):
-        output_folder = comfyui_api.get_comfyui_output_path(context)
+        output_folder_raw = comfyui_api.get_comfyui_output_path(context)
+        output_folder = os.path.normpath(output_folder_raw)
         print(f"Opening folder: {output_folder}")
 
         if platform.system() == "Windows":
-            os.system(f"explorer '{output_folder}'")
+            os.system(f'explorer "{output_folder}"')
         elif platform.system() == "Darwin":
             os.system(f"open '{output_folder}'")
-
-        return {"FINISHED"}
-
-
-class AIR_OT_open_comfyui_workflows_folder(bpy.types.Operator):
-    "Open the workflow folder in the Windows Explorer or macOS Finder"
-
-    bl_idname = "ai_render.open_comfyui_workflows_folder"
-    bl_label = "Open Workflow Folder"
-    bl_description = "Open the workflow folder in the Windows Explorer or macOS Finder"
-
-    def execute(self, context):
-        workflow_folder = utils.get_addon_preferences().comfyui_workflows_path
-        print(f"Opening folder: {workflow_folder}")
-
-        if platform.system() == "Windows":
-            os.system(f"explorer '{workflow_folder}'")
-        elif platform.system() == "Darwin":
-            os.system(f"open '{workflow_folder}'")
+        elif platform.system() == "Linux":
+            try:
+                os.system(f'xdg-open "{output_folder}"')
+            except Exception:
+                print(f"Could not open folder on Linux using xdg-open.")
 
         return {"FINISHED"}
 
@@ -345,7 +364,7 @@ class AIR_OT_SetComfyAsBackend(bpy.types.Operator):
         utils.get_addon_preferences(context).sd_backend = "comfyui"
         utils.get_addon_preferences(context).local_sd_url = "http://127.0.0.1:8188"
         utils.get_addon_preferences(context).is_local_sd_enabled = True
-        utils.get_addon_preferences(context).comfyui_path = "E:\\COMFY\\ComfyUI-robe\\"
+        utils.get_addon_preferences(context).comfyui_path = "E:\\COMFY\\ComfyUI\\"
 
         return {"FINISHED"}
 
@@ -374,3 +393,5 @@ def register():
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
+
+
