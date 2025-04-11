@@ -1,8 +1,8 @@
 {
   "id": "68a70480-36a9-4197-94e8-6faf4d9c939f",
   "revision": 0,
-  "last_node_id": 77,
-  "last_link_id": 153,
+  "last_node_id": 78,
+  "last_link_id": 156,
   "nodes": [
     {
       "id": 3,
@@ -57,7 +57,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        123456810,
+        123456654,
         "fixed",
         20,
         7.5,
@@ -72,15 +72,15 @@
       "id": 4,
       "type": "CheckpointLoaderSimple",
       "pos": [
-        -1460,
-        -120
+        -830,
+        -260
       ],
       "size": [
         513.502197265625,
         122.61135864257812
       ],
       "flags": {},
-      "order": 4,
+      "order": 9,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -90,7 +90,7 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            61
+            156
           ]
         },
         {
@@ -122,7 +122,7 @@
       "id": 6,
       "type": "CLIPTextEncode",
       "pos": [
-        20,
+        260,
         -140
       ],
       "size": [
@@ -166,7 +166,7 @@
       "id": 7,
       "type": "CLIPTextEncode",
       "pos": [
-        20,
+        260,
         120
       ],
       "size": [
@@ -254,8 +254,8 @@
       "id": 9,
       "type": "SaveImage",
       "pos": [
-        3625,
-        -158
+        3100,
+        -90
       ],
       "size": [
         322.59356689453125,
@@ -288,15 +288,15 @@
       "id": 10,
       "type": "VAEEncode",
       "pos": [
-        2052,
-        136
+        2130,
+        120
       ],
       "size": [
         160,
         60
       ],
       "flags": {},
-      "order": 11,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -331,7 +331,7 @@
       "id": 11,
       "type": "VAELoader",
       "pos": [
-        1470,
+        1660,
         350
       ],
       "size": [
@@ -339,7 +339,7 @@
         60
       ],
       "flags": {},
-      "order": 0,
+      "order": 8,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -367,15 +367,15 @@
       "id": 12,
       "type": "LoadImage",
       "pos": [
-        60,
+        300,
         -830
       ],
       "size": [
-        420,
-        314
+        360,
+        340
       ],
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -498,7 +498,7 @@
         60
       ],
       "flags": {},
-      "order": 6,
+      "order": 4,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -532,7 +532,7 @@
         314
       ],
       "flags": {},
-      "order": 3,
+      "order": 2,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -650,7 +650,7 @@
         60
       ],
       "flags": {},
-      "order": 7,
+      "order": 5,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -684,7 +684,7 @@
         314
       ],
       "flags": {},
-      "order": 2,
+      "order": 1,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -722,7 +722,7 @@
       "id": 26,
       "type": "LoraLoader",
       "pos": [
-        -490,
+        -250,
         60
       ],
       "size": [
@@ -788,7 +788,7 @@
         235.27618408203125
       ],
       "flags": {},
-      "order": 1,
+      "order": 0,
       "mode": 0,
       "inputs": [],
       "outputs": [],
@@ -805,21 +805,21 @@
       "id": 28,
       "type": "LoraLoader",
       "pos": [
-        -497,
-        -117
+        -250,
+        -120
       ],
       "size": [
         404.10992431640625,
         126
       ],
       "flags": {},
-      "order": 14,
+      "order": 15,
       "mode": 0,
       "inputs": [
         {
           "name": "model",
           "type": "MODEL",
-          "link": 61
+          "link": 156
         },
         {
           "name": "clip",
@@ -862,15 +862,15 @@
       "id": 34,
       "type": "UpscaleModelLoader",
       "pos": [
-        2900,
-        -420
+        2380,
+        -350
       ],
       "size": [
         320,
         60
       ],
       "flags": {},
-      "order": 9,
+      "order": 6,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -897,8 +897,8 @@
       "id": 35,
       "type": "ImageUpscaleWithModel",
       "pos": [
-        2900,
-        -320
+        2380,
+        -250
       ],
       "size": [
         320,
@@ -991,7 +991,7 @@
         82
       ],
       "flags": {},
-      "order": 12,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -1034,7 +1034,7 @@
         280
       ],
       "flags": {},
-      "order": 15,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
@@ -1138,7 +1138,7 @@
         60
       ],
       "flags": {},
-      "order": 5,
+      "order": 3,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1165,15 +1165,15 @@
       "id": 48,
       "type": "CLIPSetLastLayer",
       "pos": [
-        -860,
-        -50
+        -250,
+        -240
       ],
       "size": [
         315,
         58
       ],
       "flags": {},
-      "order": 10,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -1214,7 +1214,7 @@
         26
       ],
       "flags": {},
-      "order": 13,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -1242,8 +1242,8 @@
       "id": 69,
       "type": "ResizeMask",
       "pos": [
-        3632,
-        -805
+        3110,
+        -740
       ],
       "size": [
         272.37994384765625,
@@ -1315,8 +1315,8 @@
       "id": 75,
       "type": "JoinImageWithAlpha",
       "pos": [
-        3626,
-        -300
+        3110,
+        -250
       ],
       "size": [
         264.5999755859375,
@@ -1359,8 +1359,8 @@
       "id": 77,
       "type": "GetImageSizeAndCount",
       "pos": [
-        3290,
-        -596
+        2760,
+        -480
       ],
       "size": [
         277.20001220703125,
@@ -1568,14 +1568,6 @@
       "UPSCALE_MODEL"
     ],
     [
-      61,
-      4,
-      0,
-      28,
-      0,
-      "MODEL"
-    ],
-    [
       62,
       26,
       0,
@@ -1742,16 +1734,24 @@
       75,
       0,
       "IMAGE"
+    ],
+    [
+      156,
+      4,
+      0,
+      28,
+      0,
+      "MODEL"
     ]
   ],
   "groups": [],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 1.4864362802414433,
+      "scale": 0.28531167061100043,
       "offset": [
-        448.32185704139596,
-        247.1426651626019
+        1854.2109175262697,
+        1727.9092254975155
       ]
     },
     "ue_links": [],
