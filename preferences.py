@@ -38,7 +38,7 @@ class AIRPreferences(bpy.types.AddonPreferences):
 
     sd_backend: bpy.props.EnumProperty(
         name="Stable Diffusion Backend",
-        default="dreamstudio",
+        default="comfyui",
         items=[
             ('dreamstudio', 'DreamStudio (cloud)', ''),
             ('stablehorde', 'Stable Horde (cloud)', ''),
@@ -53,7 +53,7 @@ class AIRPreferences(bpy.types.AddonPreferences):
     local_sd_url: bpy.props.StringProperty(
         name="URL of the Stable Diffusion Web Server",
         description="The location of the web server that is currently running on your local machine",
-        default="http://127.0.0.1:7860",
+        default="http://127.0.0.1:8188",
     )
 
     local_sd_timeout: bpy.props.IntProperty(
@@ -111,7 +111,7 @@ class AIRPreferences(bpy.types.AddonPreferences):
     # ComfyUI
     comfyui_path: bpy.props.StringProperty(
         name="ComfyUI Path",
-        default="Set the location of ComfyUI",
+        default="E:\\COMFY\\ComfyUI\\",
         description="The path to the ComfyUI Installation",
         subtype="DIR_PATH",
     )
