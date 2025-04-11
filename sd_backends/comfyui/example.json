@@ -80,7 +80,7 @@
         122.61135864257812
       ],
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -157,7 +157,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "A cube mad of metal"
+        "A cube made of metal"
       ],
       "color": "#232",
       "bgcolor": "#353"
@@ -375,7 +375,7 @@
         314
       ],
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -498,7 +498,7 @@
         60
       ],
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -532,7 +532,7 @@
         314
       ],
       "flags": {},
-      "order": 4,
+      "order": 3,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -650,7 +650,7 @@
         60
       ],
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -870,7 +870,7 @@
         60
       ],
       "flags": {},
-      "order": 3,
+      "order": 9,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1138,7 +1138,7 @@
         60
       ],
       "flags": {},
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1748,10 +1748,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.4736244074476696,
+      "scale": 1.4864362802414433,
       "offset": [
-        2.829013256240901,
-        1064.187885317681
+        448.32185704139596,
+        247.1426651626019
       ]
     },
     "ue_links": [],
