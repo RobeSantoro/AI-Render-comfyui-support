@@ -11,10 +11,13 @@ from . import (
     config,
     progress_bar,
     task_queue,
-    utils,
+    utils
 )
 
-from .sd_backends import automatic1111_api
+from .sd_backends import (
+    automatic1111_api,
+    comfyui_api
+    )
 
 # Colorama Placeholder
 from . import Fore
@@ -227,12 +230,12 @@ def do_pre_render_setup(scene):
 
     # ensure the compositor nodes are set up correctly to send color,
     # depth, and normal data to comfyui.
+    if utils.sd_backend() == "comfyui":
+        comfyui_api.ensure_compositor_nodes(bpy.context)
 
     # It seems that it is not possible to change the base_path of the
     # file output node, cause it takes only the path and saves the file
-    # with the name of 'Image0001' and the extension of the file format.
-    # if utils.sd_backend() == "comfyui":
-    #     ensure_compositor_nodes(bpy.context)
+    # with the name 'Image0001' and the extension of the file format.
 
 
 def do_pre_api_setup(scene):
