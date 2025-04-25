@@ -171,8 +171,9 @@ class AIR_PT_setup(bpy.types.Panel):
             row.prop(utils.get_addon_preferences(context), "local_sd_url", text="")
 
             if utils.sd_backend(context) == "comfyui":
-                # ComfyUI Path
-                box.prop(utils.get_addon_preferences(context), 'comfyui_path', text="Comfy")
+                # ComfyUI Paths
+                box.prop(utils.get_addon_preferences(context), 'comfyui_local_path', text="Local Temp Path")
+                box.prop(utils.get_addon_preferences(context), 'comfyui_server_path', text="Comfy Server")
 
                 # ComfyUI Workflows Path
                 box.prop(utils.get_addon_preferences(context), 'comfyui_workflows_path', text="Workflows")

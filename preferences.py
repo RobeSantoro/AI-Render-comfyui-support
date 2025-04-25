@@ -16,25 +16,25 @@ class AIRPreferences(bpy.types.AddonPreferences):
     dream_studio_api_key: bpy.props.StringProperty(
         name="API Key",
         description="Your DreamStudio API KEY",
-    )
+    ) # type: ignore
 
     stable_horde_api_key: bpy.props.StringProperty(
         name="API Key",
         description="Your Stable Horde API KEY (optional)",
-    )
+    ) # type: ignore
 
     is_valid_installation: bpy.props.BoolProperty(
         name="Add-on installed correctly",
         description="If this is False, the add-on hasn't been installed correctly",
         default=True,
-    )
+    ) # type: ignore
 
     is_local_sd_enabled: bpy.props.BoolProperty(
         name="Enable Rendering with Local Stable Diffusion",
         description="NOTE: This is now legacy, but is used to set sd_backend for anyone who was previously using Automatic1111",
         default=False,
         update=properties.ensure_properties,
-    )
+    ) # type: ignore
 
     sd_backend: bpy.props.EnumProperty(
         name="Stable Diffusion Backend",
@@ -48,13 +48,13 @@ class AIRPreferences(bpy.types.AddonPreferences):
         ],
         update=properties.ensure_properties,
         description="Choose a Stable Diffusion backend to use. DreamStudio is the default, and is the quickest to run. Stable Horde is a community-run backend that is completely free. Automatic1111 is a local installation of Stable Diffusion.",
-    )
+    ) # type: ignore
 
     local_sd_url: bpy.props.StringProperty(
         name="URL of the Stable Diffusion Web Server",
         description="The location of the web server that is currently running on your local machine",
         default="http://127.0.0.1:8188",
-    )
+    ) # type: ignore
 
     local_sd_timeout: bpy.props.IntProperty(
         name="Timeout (in seconds)",
@@ -62,65 +62,72 @@ class AIRPreferences(bpy.types.AddonPreferences):
         default=360,
         min=10,
         max=3600,
-    )
+    ) # type: ignore
 
     is_opted_out_of_analytics: bpy.props.BoolProperty(
         name="Opt out of analytics",
         description="If this is checked, the add-on will not send or store any analytics data",
         default=False,
-    )
+    ) # type: ignore
 
     # Add-on Updater Preferences
     updater_expanded_in_preferences_panel: bpy.props.BoolProperty(
         name="Show the updater preferences",
         description="Updater preferences twirled down when True, twirled up when False",
-        default=False)
+        default=False) # type: ignore
 
     auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
-        default=True)
+        default=True)  # type: ignore
 
     updater_interval_months: bpy.props.IntProperty(
         name='Months',
         description="Number of months between checking for updates",
         default=0,
-        min=0)
+        min=0) # type: ignore
 
     updater_interval_days: bpy.props.IntProperty(
         name='Days',
         description="Number of days between checking for updates",
         default=1,
         min=0,
-        max=31)
+        max=31) # type: ignore
 
     updater_interval_hours: bpy.props.IntProperty(
         name='Hours',
         description="Number of hours between checking for updates",
         default=0,
         min=0,
-        max=23)
+        max=23) # type: ignore
 
     updater_interval_minutes: bpy.props.IntProperty(
         name='Minutes',
         description="Number of minutes between checking for updates",
         default=0,
         min=0,
-        max=59)
+        max=59) # type: ignore
 
     # ComfyUI
-    comfyui_path: bpy.props.StringProperty(
-        name="ComfyUI Path",
+    comfyui_server_path: bpy.props.StringProperty(
+        name="ComfyUI server path",
         default="E:\\COMFY\\ComfyUI\\",
-        description="The path to the ComfyUI Installation",
+        description="The absolute location of the ComfyUI folder on the Server",
         subtype="DIR_PATH",
-    )
+    ) # type: ignore
+
+    comfyui_local_path: bpy.props.StringProperty(
+        name="ComfyUI temp path",
+        default="/Users/robesantoro/Desktop/ComfyTemp/",
+        description="The temporary folder where to save the rendered pass to be uploaded to the server",
+        subtype="DIR_PATH",
+    ) # type: ignore
 
     comfyui_workflows_path: bpy.props.StringProperty(
         name="Workflows Path",
         description="Path where the workflows are stored",
         default=get_default_comfy_workflows_path(),
-        subtype='DIR_PATH')
+        subtype='DIR_PATH') # type: ignore
 
     def draw(self, context):
         layout = self.layout
@@ -253,7 +260,9 @@ class AIRPreferences(bpy.types.AddonPreferences):
                 col.prop(self, "local_sd_timeout", text="")
 
                 row = box.row()
-                row.prop(self, "comfyui_path")
+                row.prop(self, "comfyui_server_path")
+                row = box.row()
+                row.prop(self, "comfyui_local_path")
                 row = box.row()
                 row.prop(self, "comfyui_workflows_path")
 

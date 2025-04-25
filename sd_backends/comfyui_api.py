@@ -19,9 +19,9 @@ LOG_WORKFLOW = False
 LOG_PARAMS = False
 LOG_MAPPED_WORKFLOW = False
 
-LOG_REQUEST = False
-LOG_RESPONSE = False
-LOG_LONG_RESPONSE = False
+LOG_REQUEST = True
+LOG_RESPONSE = True
+LOG_LONG_RESPONSE = True
 
 LOG_UPLOAD_IMAGE = True
 LOG_DOWNLOAD_IMAGE = True
@@ -50,11 +50,8 @@ def load_workflow(context, workflow_file) -> dict:
         return operators.handle_error(f"Couldn't load the workflow file: {workflow_file}.", "workflow_file_not_found")
 
 
-def upload_image(img_file, subfolder: str):
+def upload_image(image_path, subfolder: str):
     """Upload the image to the input folder of ComfyUI"""
-
-    # Get the image path from the name of _io.BufferedReader
-    image_path = img_file.name
 
     if LOG_UPLOAD_IMAGE:
         print(Fore.WHITE + "\nLOG IMAGE PATH:" + Fore.RESET)
@@ -63,7 +60,7 @@ def upload_image(img_file, subfolder: str):
     # prepare the data
     server_url = get_server_url("/upload/image")
     headers = create_headers()
-    data = {"subfolder": subfolder, "type": "input"}
+    data = {"subfolder": subfolder, "type": "input", "overwrite": "true"}
     files = {"image": (os.path.basename(image_path), open(image_path, "rb"))}
 
     if LOG_REQUEST:
@@ -88,11 +85,9 @@ def upload_image(img_file, subfolder: str):
             "timeout",
         )
 
-    # if LOG_RESPONSE:
-    # print(Fore.WHITE + "\nUPLOAD IMAGE RESPONSE:" + Fore.RESET)
-    # pprint.pp(resp.content)
-
-    img_file.close()
+    if LOG_RESPONSE:
+        print(Fore.WHITE + "\nUPLOAD IMAGE RESPONSE:" + Fore.RESET)
+        pprint.pp(resp.content)
 
     # return the image name
     return resp.json().get("name")
@@ -202,17 +197,29 @@ def generate(params, img_file, filename_prefix, props, comfyui_props):
     # format the frame number to 4 digits
     frame_number = str(frame_number).zfill(4)
 
+    # UPLOAD IMAGES
+    color_image_local_path = f"{get_color_local_input_path(bpy.context)}Image{frame_number}.png"
+    depth_image_local_path = f"{get_depth_local_input_path(bpy.context)}Image{frame_number}.png"
+    normal_image_local_path = f"{get_normal_local_input_path(bpy.context)}Image{frame_number}.png"
+    openpose_body_image_local_path = f"{get_openpose_body_local_input_path(bpy.context)}Image{frame_number}.png"
+
+    upload_image(color_image_local_path, "color")
+    upload_image(depth_image_local_path, "depth")
+    upload_image(normal_image_local_path, "normal")
+    if bpy.context.scene.view_layers.get("Openpose_body"):
+        upload_image(openpose_body_image_local_path, "openpose_body")
+
     # Create the paths
-    color_image_path = f"{get_color_file_input_path(bpy.context)}Image{frame_number}.png"
-    depth_image_path = f"{get_depth_file_input_path(bpy.context)}Image{frame_number}.png"
-    normal_image_path = f"{get_normal_file_input_path(bpy.context)}Image{frame_number}.png"
-    openpose_body_image_path = f"{get_openpose_body_file_input_path(bpy.context)}Image{frame_number}.png"
+    color_image_server_path = f"{get_color_server_input_path(bpy.context)}Image{frame_number}.png"
+    depth_image_server_path = f"{get_depth_server_input_path(bpy.context)}Image{frame_number}.png"
+    normal_image_server_path = f"{get_normal_server_input_path(bpy.context)}Image{frame_number}.png"
+    openpose_body_image_server_path = f"{get_openpose_body_server_input_path(bpy.context)}Image{frame_number}.png"
 
     # Add the paths to the params
-    params["color_image"] = color_image_path
-    params["depth_image"] = depth_image_path
-    params["normal_image"] = normal_image_path
-    params["openpose_body_image"] = openpose_body_image_path
+    params["color_image"] = color_image_server_path
+    params["depth_image"] = depth_image_server_path
+    params["normal_image"] = normal_image_server_path
+    params["openpose_body_image"] = openpose_body_image_server_path
 
     # Create Color Image from pixels data
     if bpy.data.images["Viewer Node"].pixels:
@@ -1001,7 +1008,7 @@ def ensure_compositor_nodes(context):
     normal_file_output.label = "Normal"
     normal_file_output.name = "normal_file_output"
     normal_file_output.active_input_index = 0
-    normal_file_output.base_path = get_normal_file_input_path(context)
+    normal_file_output.base_path = get_normal_local_input_path(context)
     normal_file_output.location = (690, -7)
     normal_file_output.width, normal_file_output.height = 300.0, 100.0
 
@@ -1041,7 +1048,7 @@ def ensure_compositor_nodes(context):
     color_file_output.label = "Color"
     color_file_output.name = "color_file_output"
     color_file_output.active_input_index = 0
-    color_file_output.base_path = get_color_file_input_path(context)
+    color_file_output.base_path = get_color_local_input_path(context)
     color_file_output.location = (690, 240)
     color_file_output.width, color_file_output.height = 300.0, 100.0
 
@@ -1050,7 +1057,7 @@ def ensure_compositor_nodes(context):
     depth_file_output.label = "Depth"
     depth_file_output.name = "depth_file_output"
     depth_file_output.active_input_index = 0
-    depth_file_output.base_path = get_depth_file_input_path(context)
+    depth_file_output.base_path = get_depth_local_input_path(context)
     depth_file_output.location = (700, 120)
     depth_file_output.width, depth_file_output.height = 300.0, 100.0
 
@@ -1061,7 +1068,7 @@ def ensure_compositor_nodes(context):
         openpose_body_file_output.label = "OpenPose_body"
         openpose_body_file_output.name = "OpenPose_body_file_output"
         openpose_body_file_output.active_input_index = 0
-        openpose_body_file_output.base_path = get_openpose_body_file_input_path(context)
+        openpose_body_file_output.base_path = get_openpose_body_local_input_path(context)
         openpose_body_file_output.location = (700, -260)
         openpose_body_file_output.width, openpose_body_file_output.height = 300.0, 100.0
 
@@ -1099,36 +1106,48 @@ def ensure_compositor_nodes(context):
         node.select = False
 
 
-# PATH FUNCTIONS:
-def get_default_comfy_workflows_path():
-    workflows_path = os.path.join(os.path.dirname(__file__), "comfyui", "workflows_api")
-    return workflows_path
-
-
-def get_comfyui_input_path(context):
-    comfyui_path = utils.get_addon_preferences(context).comfyui_path
-    return comfyui_path + "input/"
-
-
+# PATH FUNCTIONS
 def get_comfyui_output_path(context):
     comfyui_path = utils.get_addon_preferences(context).comfyui_path
     return comfyui_path + "output/"
 
+def get_default_comfy_workflows_path():
+    workflows_path = os.path.join(os.path.dirname(__file__), "comfyui", "workflows_api")
+    return workflows_path
 
-def get_color_file_input_path(context):
-    return get_comfyui_input_path(context) + "color/"
+# INPUT PATHS ON SERVER
+def get_comfyui_server_input_path(context):
+    comfyui_server_path = utils.get_addon_preferences(context).comfyui_server_path
+    return comfyui_server_path + "input/"
 
+def get_color_server_input_path(context):
+    return get_comfyui_server_input_path(context) + "color/"
 
-def get_depth_file_input_path(context):
-    return get_comfyui_input_path(context) + "depth/"
+def get_depth_server_input_path(context):
+    return get_comfyui_server_input_path(context) + "depth/"
 
+def get_normal_server_input_path(context):
+    return get_comfyui_server_input_path(context) + "normal/"
 
-def get_normal_file_input_path(context):
-    return get_comfyui_input_path(context) + "normal/"
+def get_openpose_body_server_input_path(context):
+    return get_comfyui_server_input_path(context) + "openpose_body/"
 
+# LOCAL INPUT PATHS
+def get_comfyui_local_input_path(context):
+    comfyui_path = utils.get_addon_preferences(context).comfyui_local_path
+    return comfyui_path + "input/"
 
-def get_openpose_body_file_input_path(context):
-    return get_comfyui_input_path(context) + "openpose_body/"
+def get_color_local_input_path(context):
+    return get_comfyui_local_input_path(context) + "color/"
+
+def get_depth_local_input_path(context):
+    return get_comfyui_local_input_path(context) + "depth/"
+
+def get_normal_local_input_path(context):
+    return get_comfyui_local_input_path(context) + "normal/"
+
+def get_openpose_body_local_input_path(context):
+    return get_comfyui_local_input_path(context) + "openpose_body/"
 
 
 # AI RENDER
