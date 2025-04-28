@@ -118,7 +118,7 @@ class AIRPreferences(bpy.types.AddonPreferences):
 
     comfyui_local_path: bpy.props.StringProperty(
         name="ComfyUI temp path",
-        default="/Users/robesantoro/Desktop/ComfyTemp/",
+        default="E:\\COMFY\\ComfyUI\\",
         description="The temporary folder where to save the rendered pass to be uploaded to the server",
         subtype="DIR_PATH",
     ) # type: ignore
