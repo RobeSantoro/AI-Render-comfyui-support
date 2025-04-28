@@ -283,23 +283,23 @@ def set_comfy_scheduler_name(self, context):
 
 
 class ComfyUICheckpointLoaderSimple(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    ckpt_name: bpy.props.StringProperty(name="ckpt_name", default="", description="Name of the checkpoint model")
-    ckpt_enum: bpy.props.EnumProperty(name="ckpt_enum", default=0, items=create_models_enum, description="A list of the available checkpoints", update=set_ckpt_name)
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    ckpt_name: bpy.props.StringProperty(name="ckpt_name", default="", description="Name of the checkpoint model") # type: ignore
+    ckpt_enum: bpy.props.EnumProperty(name="ckpt_enum", default=0, items=create_models_enum, description="A list of the available checkpoints", update=set_ckpt_name) # type: ignore
 
 
 class ComfyUILoraNode(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    lora_name: bpy.props.StringProperty(name="current_lora_model", default="", description="Name of the LoRA model")
-    lora_enum: bpy.props.EnumProperty(name="lora_enum", default=0, items=create_lora_enum, description="A list of the available LoRA models", update=set_lora_name)
-    strength_model: bpy.props.FloatProperty(name="Lora Model Strength", default=1, soft_min=0, soft_max=1, min=0, max=10, description="Strength of the LoRA model")
-    strength_clip: bpy.props.FloatProperty(name="Lora Clip Strength", default=1, soft_min=0, soft_max=1, min=0, max=10, description="Strength of the CLIP model")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    lora_name: bpy.props.StringProperty(name="current_lora_model", default="", description="Name of the LoRA model") # type: ignore
+    lora_enum: bpy.props.EnumProperty(name="lora_enum", default=0, items=create_lora_enum, description="A list of the available LoRA models", update=set_lora_name) # type: ignore
+    strength_model: bpy.props.FloatProperty(name="Lora Model Strength", default=1, soft_min=0, soft_max=1, min=0, max=10, description="Strength of the LoRA model") # type: ignore
+    strength_clip: bpy.props.FloatProperty(name="Lora Clip Strength", default=1, soft_min=0, soft_max=1, min=0, max=10, description="Strength of the CLIP model") # type: ignore
 
 
 class ComfyUIControlNetNode(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    control_net_name: bpy.props.StringProperty(name="ControlNet Name", default="", description="Name of the ControlNet model")
-    control_net_enum: bpy.props.EnumProperty(name="control_net_enum", default=0, items=create_control_net_enum, description="A list of the available ControlNet models")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    control_net_name: bpy.props.StringProperty(name="ControlNet Name", default="", description="Name of the ControlNet model") # type: ignore
+    control_net_enum: bpy.props.EnumProperty(name="control_net_enum", default=0, items=create_control_net_enum, description="A list of the available ControlNet models") # type: ignore
     strength: bpy.props.FloatProperty(
         name="ControlNet Strength",
         default=1,
@@ -308,15 +308,15 @@ class ComfyUIControlNetNode(bpy.types.PropertyGroup):
         min=0,
         max=10,
         description="Strength of the ControlNet model",
-    )
-    start_percent: bpy.props.FloatProperty(name="ControlNet Start Percent", default=0, min=0, max=1, description="Start percent of the ControlNet model")
-    end_percent: bpy.props.FloatProperty(name="ControlNet End Percent", default=1, min=0, max=1, description="End percent of the ControlNet model")
+    ) # type: ignore
+    start_percent: bpy.props.FloatProperty(name="ControlNet Start Percent", default=0, min=0, max=1, description="Start percent of the ControlNet model") # type: ignore
+    end_percent: bpy.props.FloatProperty(name="ControlNet End Percent", default=1, min=0, max=1, description="End percent of the ControlNet model") # type: ignore
 
 
 class ComfyUIACNAdvancedControlNetApply(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    control_net_name: bpy.props.StringProperty(name="ControlNet Name", default="", description="Name of the ControlNet model")
-    control_net_enum: bpy.props.EnumProperty(name="control_net_enum", default=0, items=create_control_net_enum, description="A list of the available ControlNet models")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    control_net_name: bpy.props.StringProperty(name="ControlNet Name", default="", description="Name of the ControlNet model") # type: ignore
+    control_net_enum: bpy.props.EnumProperty(name="control_net_enum", default=0, items=create_control_net_enum, description="A list of the available ControlNet models") # type: ignore
     strength: bpy.props.FloatProperty(
         name="ControlNet Strength",
         default=1,
@@ -325,35 +325,35 @@ class ComfyUIACNAdvancedControlNetApply(bpy.types.PropertyGroup):
         min=0,
         max=10,
         description="Strength of the ControlNet model",
-    )
-    start_percent: bpy.props.FloatProperty(name="ControlNet Start Percent", default=0, min=0, max=1, description="Start percent of the ControlNet model")
-    end_percent: bpy.props.FloatProperty(name="ControlNet End Percent", default=1, min=0, max=1, description="End percent of the ControlNet model")
+    ) # type: ignore
+    start_percent: bpy.props.FloatProperty(name="ControlNet Start Percent", default=0, min=0, max=1, description="Start percent of the ControlNet model") # type: ignore
+    end_percent: bpy.props.FloatProperty(name="ControlNet End Percent", default=1, min=0, max=1, description="End percent of the ControlNet model") # type: ignore
 
 
 class ComfyUIUpscaleModelLoader(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    upscale_model_name: bpy.props.StringProperty(name="upscale_model_name", default="", description="Name of the upscale model")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    upscale_model_name: bpy.props.StringProperty(name="upscale_model_name", default="", description="Name of the upscale model") # type: ignore
     upscale_model_enum: bpy.props.EnumProperty(
         name="upscale_model_enum", default=0, items=create_upscale_model_enum, description="A list of the available upscale models", update=set_upscale_model_name
-    )
+    ) # type: ignore
 
 
 class ComfyUISelfAttentionGuidance(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    blur_sigma: bpy.props.FloatProperty(name="Self-Attention Guidance Blur Sigma", default=2, soft_min=0, soft_max=10, min=0, max=10, description="Blur sigma")
-    scale: bpy.props.FloatProperty(name="Self-Attention Guidance Scale", default=0.5, min=-2, max=5, description="Scale")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    blur_sigma: bpy.props.FloatProperty(name="Self-Attention Guidance Blur Sigma", default=2, soft_min=0, soft_max=10, min=0, max=10, description="Blur sigma") # type: ignore
+    scale: bpy.props.FloatProperty(name="Self-Attention Guidance Scale", default=0.5, min=-2, max=5, description="Scale") # type: ignore
 
 
 class ComfyUIMainKSampler(bpy.types.PropertyGroup):
     # """This should map only with the main_sampler node in the workflow"""
 
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
     seed: bpy.props.IntProperty(
         name="Seed",
         min=0,
         description="Seed",
-    )
-    is_main_sampler: bpy.props.BoolProperty(name="is_main_sampler", default=False, description="Is the Main Sampler connected to Save Image")
+    ) # type: ignore
+    is_main_sampler: bpy.props.BoolProperty(name="is_main_sampler", default=False, description="Is the Main Sampler connected to Save Image") # type: ignore
     steps: bpy.props.IntProperty(
         name="Steps",
         default=10,
@@ -362,7 +362,7 @@ class ComfyUIMainKSampler(bpy.types.PropertyGroup):
         min=1,
         max=150,
         description="Steps",
-    )
+    ) # type: ignore
     cfg: bpy.props.FloatProperty(
         name="Cfg",
         default=7,
@@ -371,23 +371,23 @@ class ComfyUIMainKSampler(bpy.types.PropertyGroup):
         min=0,
         max=35,
         description="Cfg",
-    )
-    sampler_name: bpy.props.StringProperty(name="current_sampler_name", default="", description="Name of the sampler")
-    sampler_enum: bpy.props.EnumProperty(name="sampler_enum", default=130, items=create_comfy_sampler_enum, description="A list of the available samplers", update=set_comfy_sampler_name)
-    scheduler_name: bpy.props.StringProperty(name="current_scheduler_name", default="", description="Name of the scheduler")
-    scheduler_enum: bpy.props.EnumProperty(name="scheduler_enum", default=20, items=create_comfy_scheduler_enum, description="A list of the available schedulers", update=set_comfy_scheduler_name)
+    ) # type: ignore
+    sampler_name: bpy.props.StringProperty(name="current_sampler_name", default="", description="Name of the sampler") # type: ignore
+    sampler_enum: bpy.props.EnumProperty(name="sampler_enum", default=130, items=create_comfy_sampler_enum, description="A list of the available samplers", update=set_comfy_sampler_name) # type: ignore
+    scheduler_name: bpy.props.StringProperty(name="current_scheduler_name", default="", description="Name of the scheduler") # type: ignore
+    scheduler_enum: bpy.props.EnumProperty(name="scheduler_enum", default=20, items=create_comfy_scheduler_enum, description="A list of the available schedulers", update=set_comfy_scheduler_name) # type: ignore
     denoise: bpy.props.FloatProperty(
         name="Denoise",
         default=0.8,
         description="Denoise",
         min=0.001,
         max=1,
-    )
+    ) # type: ignore
 
 
 class ComfyUICLIPSetLastLayer(bpy.types.PropertyGroup):
-    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded")
-    stop_at_clip_layer: bpy.props.IntProperty(name="stop_at_clip_layer", default=-1, min=-24, max=-1, description="Stop at Clip Layer")
+    expanded: bpy.props.BoolProperty(name="expanded", default=True, description="Expanded") # type: ignore
+    stop_at_clip_layer: bpy.props.IntProperty(name="stop_at_clip_layer", default=-1, min=-24, max=-1, description="Stop at Clip Layer") # type: ignore
 
 
 class ComfyUIProps(bpy.types.PropertyGroup):
@@ -395,22 +395,22 @@ class ComfyUIProps(bpy.types.PropertyGroup):
         name="comfyui_current_workflow",
         default="",
         description="Current workflow",
-    )
+    ) # type: ignore
     comfyui_workflow: bpy.props.EnumProperty(
         name="comfyui_workflow",
         default=0,
         items=create_workflow_enum_realtime,
         description="A list of the available workflows in the path specified in the addon preferences",
         update=create_props_from_workflow,
-    )
-    comfyui_checkpoint_loader_simple: bpy.props.CollectionProperty(type=ComfyUICheckpointLoaderSimple)
-    comfyui_ksampler: bpy.props.CollectionProperty(type=ComfyUIMainKSampler)
-    comfyui_lora_nodes: bpy.props.CollectionProperty(type=ComfyUILoraNode)
-    comfyui_control_net_nodes: bpy.props.CollectionProperty(type=ComfyUIControlNetNode)
-    comfyui_acn_advanced_control_net_apply: bpy.props.CollectionProperty(type=ComfyUIACNAdvancedControlNetApply)
-    comfyui_self_attention_guidance: bpy.props.CollectionProperty(type=ComfyUISelfAttentionGuidance)
-    comfyui_upscale_model_loader: bpy.props.CollectionProperty(type=ComfyUIUpscaleModelLoader)
-    comfyui_CLIP_set_last_layer: bpy.props.CollectionProperty(type=ComfyUICLIPSetLastLayer)
+    ) # type: ignore
+    comfyui_checkpoint_loader_simple: bpy.props.CollectionProperty(type=ComfyUICheckpointLoaderSimple) # type: ignore
+    comfyui_ksampler: bpy.props.CollectionProperty(type=ComfyUIMainKSampler) # type: ignore
+    comfyui_lora_nodes: bpy.props.CollectionProperty(type=ComfyUILoraNode) # type: ignore
+    comfyui_control_net_nodes: bpy.props.CollectionProperty(type=ComfyUIControlNetNode) # type: ignore
+    comfyui_acn_advanced_control_net_apply: bpy.props.CollectionProperty(type=ComfyUIACNAdvancedControlNetApply) # type: ignore
+    comfyui_self_attention_guidance: bpy.props.CollectionProperty(type=ComfyUISelfAttentionGuidance) # type: ignore
+    comfyui_upscale_model_loader: bpy.props.CollectionProperty(type=ComfyUIUpscaleModelLoader) # type: ignore
+    comfyui_CLIP_set_last_layer: bpy.props.CollectionProperty(type=ComfyUICLIPSetLastLayer) # type: ignore
 
 
 classes = [
